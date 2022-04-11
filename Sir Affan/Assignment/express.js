@@ -6,9 +6,14 @@ const path = require('path')
 const port = 1992
 const content = "Test Code Working"
 
+app.get('/home', (req, res) => {
+  console.log(__dirname);
+  res.sendFile(path.join(__dirname, 'drop.html' ))
+});
+
 app.get('/portfolio', (req, res) => {
   res.send('Name-Syed Asghar Abbas, Contact = gmail.com, Marital status- unmarried')
-})
+});
 
 app.get('/skills', (req, res) => {
   res.send('Time Management, Team Working, In-depth Analyis, Problem solving')
@@ -39,6 +44,5 @@ app.listen(port, () => {
 //   console.log(req)
 //   console.log(res)
 // })
-
 
 
