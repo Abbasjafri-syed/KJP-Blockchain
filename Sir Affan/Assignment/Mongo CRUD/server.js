@@ -6,8 +6,6 @@ port = 3500
 log = require("morgan")
 const bodyParser = require("body-parser")
 
-
-
 //MIDDLE WARES
 a.use(bodyParser.json())
 a.use (log("dev"))
