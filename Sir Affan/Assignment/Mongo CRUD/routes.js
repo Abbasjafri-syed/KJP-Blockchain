@@ -10,15 +10,15 @@ routes.get("/home",(req,res)=>{
 
 
   
-routes.post("/create", async(req,res)=>{
+routes.post("/create", (req,res)=>{
     console.log(req.body);
     model1.insertMany([{
-        "taskname" : req.body.name,
-        "timerequired" :   req.body.timerequired,
+        "taskname" : req.body.taskname,
+        "timerequired" : req.body.timerequired,
         "status"  : req.body.status
     }])
     
-    res.json("req.body")
+    res.json(req.body)
 })
 
 
@@ -26,32 +26,45 @@ routes.post("/create", async(req,res)=>{
 routes.post("/remove", (req,res)=>{
     console.log(req.body);
     model1.remove({
-        name : req.body.name
+        "taskname" : req.body.taskname
     }).exec()     // in delete AND UPDTAE we should use exec()
     
-    res.json("Task Created")
+    res.json(req.body)
 })
 
 
 
 routes.post("/update", (req,res)=>{
     console.log(req.body);
-    model1.findOneandUpdate({
-        name : req.body.name
-    }).exec()    
+    model1.findOneAndUpdate({
+        "taskname" : req.body.taskname }, {$set: {"status":req.query.status }}
+       
+       ).exec()    
     
-    res.json("Task Updated")
+    res.json(req.body)
 })
 
 
 
 routes.post("/delete", (req,res)=>{
     console.log(req.body);
-    model1.deleteMany({
-        name : req.body.name
+    model1.deleteOne({
+        "taskname" : req.body.taskname
     }).exec()     // in delete AND UPDTAE we should use exec()
     
-    res.json("Task deleted")
+    res.json(req.body)
+})
+
+
+
+
+routes.post("/find", (req, res) => {
+    abc = model.find({
+        taskname: req.body.taskname})
+    abc.then(data=>{
+        res.send(data)
+    })
+
 })
 
 
