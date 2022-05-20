@@ -6,6 +6,8 @@ port = 3500
 log = require("morgan")
 const bodyParser = require("body-parser")
 
+
+
 //MIDDLE WARES
 a.use(bodyParser.json())
 a.use (log("dev"))
@@ -31,9 +33,8 @@ abc = require("./routes")
 a.use("/", abc)
 
 
-a.get("/home",(req,res)=>{
-    console.log('ready');
-    res.send("NODE & MONGO made it,......")
+a.get("/",(req,res)=>{
+    res.send("NODE & MONGO TUT,......")
 })
 
 
