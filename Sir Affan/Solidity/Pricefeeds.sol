@@ -29,7 +29,7 @@ contract funding{
         //saving value against address using mapping
     mapping(address => uint256) public walletamount;
 
-    // sending amount into contract and saving address as sender and also amount sent
+    // sending amount into contract and saving address of sender with amount sent
     function funded() public payable{
         uint256 reqamount = 500;
         require(convertPrice(msg.value) >= reqamount, 'Amount does not meet threshold');
@@ -61,7 +61,14 @@ contract funding{
     function withdarwfunds() payable Onlyowner public {
         uint256 cntrctbal = address(this).balance;
         payable(owner).transfer(cntrctbal);
+
+        //loop for resetting senders amount to zero after withdrawal
+        for(uint256 i = 0; i < funders.length; i++){
+        address funds = funders[i];
+        walletamount[funds] = 0;
+        }
         funders = new address[](0); // emptying funders array after withdrawing funds
+
         }
 
 }
