@@ -42,8 +42,8 @@ abi = json.loads(
 
 W3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
 ChainID = 1337
-Myaddress = "0x7DaFa28241506c4c3C9e2b0A6e9208f3bEAd3Ebd"
-privatekey = "0x32ba65087b64fc93b59dcab117a715c219a7059f1e21c673891f4bc34cb2af39"
+Myaddress = " "
+privatekey = " "
 
 simplestore = W3.eth.contract(abi=abi, bytecode=bytecode)
 # print(simplestore)
