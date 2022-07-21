@@ -2,18 +2,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-import  '@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol';
-
 contract delegatemultiple {
 
+    string message;
     address public owner;
     address[] public delegate;
 
-    constructor() {
+    constructor(string memory msgg) {
+       message = msgg;
         owner = msg.sender;
-    }  
+    } 
 
- mapping (address => mapping (address => uint256)) private approve;
+    // nested mapping for delegating account value of token
+ mapping (address => mapping (address => uint256)) internal approve;
+   
+   
+   // delegate function to assign address and allocate funds
    function makedelegate(address sp1) public payable{
     require (msg.sender == owner, 'Only Owner Right to assign delegate');
     require(msg.value > 0, 'Amount needed to delegate');
@@ -21,8 +25,8 @@ contract delegatemultiple {
     delegate.push(sp1);
    }
 
-//    function getdelegate() public view returns(uint256) {
-//        return approve;
-//    }
-
+    //call nested mapping variable by passing params
+   function getdelegate(address deployerr, address spnder) public view returns(uint256) {
+       return approve[deployerr][spnder];
+       }
 }
