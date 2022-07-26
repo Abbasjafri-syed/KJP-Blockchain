@@ -1,4 +1,4 @@
-#  SC deployment in Ganache using python linked with file simplestorage.sol
+#  SC deployment in Ganache using python linked with file SC.sol
 
 # importing necessary libraries...
 # installing solidity lib and compiler in py
