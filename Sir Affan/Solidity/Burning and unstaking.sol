@@ -93,22 +93,20 @@ contract MYFIRSTERC20TOKEN is Context, IERC20, IERC20Metadata {
         _name = name_;
         _symbol = symbol_;
         _decimal = decimal_;
-        // _totalSupply = _amount;
-        // _balances[_msgSender()] = _amount;
-        // _teamAddress = team;
-        //_mint(_msgSender(), _amount);
     }
 
+
+    // giving wrapped tokens to funders and depositing tokens as collateral
     receive () external payable{
        require(msg.value >0, 'Amount needed to transfer');
        _mint(msg.sender, msg.value);
     }
 
-
-    function unstakingandburning(uint256 val) public payable{
-       require(_balances[msg.sender] >= val,'Amount needed to transfer');
-       payable(msg.sender).transfer(msg.value);
-       _burn(address(this), val);
+    // Refunding amount to funders and burning the wrapped tokens to maintain the
+    function unstakingandburning(uint256 amount) public {
+       require(_balances[_msgSender()] >= amount,'Amount more than current balance');
+       payable(msg.sender).transfer(amount);
+       _burn(msg.sender, amount);
     }
 
     function _burn(address account, uint256 amount) internal virtual {
@@ -419,4 +417,3 @@ contract MYFIRSTERC20TOKEN is Context, IERC20, IERC20Metadata {
         uint256 amount
     ) internal virtual {}
 }
-
