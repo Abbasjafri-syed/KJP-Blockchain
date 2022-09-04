@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Metamask Connection</title>
+	
+</head>
+<body>
+
+	<h1>Testing Connect Wallet Button</h1>
+	<button class="ethBtn">Connect Now</button>
+	<div class="accountDt"></div>
+	<br><br><hr>
+
+		<br><br><hr>
+	
+
+	<h1>Sign Your Message</h1>
+	<input type="text" name="msg">
+	<button class="signN">Sign Now</button>
+	<div class="signature"></div>
+	<br><br><hr>
+
+	<!-- <h1>ERC20 DATA</h1>
+	<div>
+		<h3>Token Name: </h3><p id="tknName"></p>
+		<h3>Token Symbol: </h3><p class="tknSymbol"></p>
+		<h3>Token totalSupply: </h3><p class="tknSupply"></p>
+	</div>
+	<br><br><hr> -->
+
+	<h1>STAKING CONTRACT</h1>
+	<div>
+		<h3>Contract Name: </h3><p class="cname"></p>
+		<h3>Current APY: </h3><p class="apy"></p>
+		<h3>Active Stakers: </h3><p class="active"></p>
+		<h3>Total Staked: </h3><p class="totalStaked"></p>
+		<div class="personal" style="visibility: hidden;">
+			<h3>MY Staked: </h3><p class="myStaked"></p>
+			<h3>MY Claimable: </h3><p class="myClaim"></p>
+		</div>
+	</div>
+	<br>
+	<input type="number" name="stakeAmount">
+	<button class="stknow">Stake NOW!</button>
+	<br><br>
+	<button 
+
+	class="endStk">END STAKE!</button>
+	<br><br>
+	<button class="rdm">REDEEM!</button>
+	<br><br>
+	<input type="number" name="perDay">
+	<button class="cltreward">Calculate PER DAY REWARD!</button>
+	<p class="rewardResult"></p>
+
+	<br><br><hr>
+	<input type="text" name="recepient">
+	<input type="number" name="value">
+	<button class="ethSend">Send Now</button>
+
+	<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+
+	<script type="text/javascript">
+			
+		ethereumButton = document.querySelector(".ethBtn")
+		divAccount = document.querySelector(".accountDt")
+		sendBtn = document.querySelector(".ethSend")
+		var abi = [
+			{
+			"constant": true,
+			"inputs": [],
+			"name": "name",
+			"outputs": [
+			{
+			"name": "",
+			"type": "string"
+			}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+			},
+			{
+			"constant": false,
+			"inputs": [
+			{
+			"name": "_spender",
+			"type": "address"
+			},
+			{
+			"name": "_value",
+			"type": "uint256"
+			}
+			],
+			"name": "approve",
+			"outputs": [
+			{
+			"name": "",
+			"type": "bool"
+			}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+			},
+			{
+			"constant": true,
+			"inputs": [],
+			"name": "totalSupply",
+			"outputs": [
+			{
+			"name": "",
+			"type": "uint256"
+			}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+			},
+			{
+			"constant": false,
+			"inputs": [
+			{
+			"name": "_from",
+			"type": "address"
+			},
+			{
+			"name": "_to",
+			"type": "address"
+			},
+			{
+			"name": "_value",
+			"type": "uint256"
+			}
+			],
+			"name": "transferFrom",
+			"outputs": [
+			{
+			"name": "",
+			"type": "bool"
+			}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+			},
+			{
+			"constant": true,
+			"inputs": [],
+			"name": "decimals",
+			"outputs": [
+			{
+			"name": "",
+			"type": "uint8"
+			}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+			},
+			{
+			"constant": true,
+			"inputs": [
+			{
+			"name": "_owner",
+			"type": "address"
+			}
+			],
+			"name": "balanceOf",
+			"outputs": [
+			{
+			"name": "balance",
+			"type": "uint256"
+			}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+			},
+			{
+			"constant": true,
+			"inputs": [],
+			"name": "symbol",
+			"outputs": [
+			{
+			"name": "",
+			"type": "string"
+			}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+			},
+			{
+			"constant": false,
+			"inputs": [
+			{
+			"name": "_to",
+			"type": "address"
+			},
+			{
+			"name": "_value",
+			"type": "uint256"
+			}
+			],
+			"name": "transfer",
+			"outputs": [
+			{
+			"name": "",
+			"type": "bool"
+			}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+			},
+			{
+			"constant": true,
+			"inputs": [
+			{
+			"name": "_owner",
+			"type": "address"
+			},
+			{
+			"name": "_spender",
+			"type": "address"
+			}
+			],
+			"name": "allowance",
+			"outputs": [
+			{
+			"name": "",
+			"type": "uint256"
+			}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+			},
+			{
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "fallback"
+			},
+			{
+			"anonymous": false,
+			"inputs": [
+			{
+			"indexed": true,
+			"name": "owner",
+			"type": "address"
+			},
+			{
+			"indexed": true,
+			"name": "spender",
+			"type": "address"
+			},
+			{
+			"indexed": false,
+			"name": "value",
+			"type": "uint256"
+			}
+			],
+			"name": "Approval",
+			"type": "event"
+			},
+			{
+			"anonymous": false,
+			"inputs": [
+			{
+			"indexed": true,
+			"name": "from",
+			"type": "address"
+			},
+			{
+			"indexed": true,
+			"name": "to",
+			"type": "address"
+			},
+			{
+			"indexed": false,
+			"name": "value",
+			"type": "uint256"
+			}
+			],
+			"name": "Transfer",
+			"type": "event"
+			}
+		];
+
+		var stakerABI = [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "reward",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "staker",
+						"type": "address"
+					}
+				],
+				"name": "Claimed",
+				"type": "event"
+				},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint8",
+						"name": "version",
+						"type": "uint8"
+					}
+				],
+				"name": "Initialized",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "staker",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "NewStake",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "staker",
+						"type": "address"
+					}
+				],
+				"name": "UnStaked",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "RemainingRewardsPot",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "StakeAmount",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "calculatePerDayRewards",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_lastrewardTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_stakero",
+						"type": "address"
+					}
+				],
+				"name": "changeLastRewardTime",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "currentAPY",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "emergencyEndstake",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "endStake",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "contract IERC20Upgradeable",
+						"name": "token_",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_apy",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_minimum",
+						"type": "uint256"
+					}
+				],
+				"name": "initialize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "redeem",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_staker",
+						"type": "address"
+					}
+				],
+				"name": "showRewards",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "stakers",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "stakedAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "historyId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lastRewardTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "claimed",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "stakersActive",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "stakingAPY",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "token",
+				"outputs": [
+					{
+						"internalType": "contract IERC20Upgradeable",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalClaimed",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalStaked",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_newAPY",
+						"type": "uint256"
+					}
+				],
+				"name": "updateAPY",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawRewardsPot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		]
+		var addressERC = "0x6880d0E64529803431FE878e5Dbc96De1c2400F4";
+		var addressStaking = "0xE73a209dda124D71d741350aee9D5Ba48DF749fF"
+		var connection = false;
+
+		var web30;
+
+		async function getContractData(web3js) {
+			const web3 = new Web3(web3js)
+			console.log(web3)
+			var erc20 = new web3.eth.Contract(abi, addressERC)
+			var nm = await erc20.methods.name().call()
+			document.querySelector("#tknName").innerText = nm
+			console.log(nm)
+
+			var sym = await erc20.methods.symbol().call()
+			document.querySelector(".tknSymbol").innerText = sym
+			console.log(sym)
+
+			var supply = await erc20.methods.totalSupply().call();
+			document.querySelector(".tknSupply").innerText = supply
+			console.log(supply)
+		}
+
+
+		async function getStakingData(web3js){
+			const web3 = new Web3(web3js)
+			var stakeContract = new web3.eth.Contract(stakerABI, addressStaking)
+			var cname = await stakeContract.methods.name().call()
+			document.querySelector(".cname").innerText = cname
+
+			var capy = await stakeContract.methods.currentAPY().call()
+			document.querySelector(".apy").innerText = capy
+
+			var active = await stakeContract.methods.stakersActive().call()
+			document.querySelector(".active").innerText = active
+
+			var tstaked = await stakeContract.methods.totalStaked().call()
+			document.querySelector(".totalStaked").innerText = tstaked
+
+			//var cname = await stakeContract.methods.name().call()
+		}
+
+
+
+		if(window.ethereum){
+			console.log("SUccess")
+			//getContractData(window.ethereum);
+			getStakingData(window.ethereum)
+			web30 = new Web3(window.ethereum);
+			var stakeContract = new web30.eth.Contract(stakerABI, addressStaking)
+			var erc20 = new web30.eth.Contract(abi, addressERC)
+			ethereumButton.addEventListener("click",async ()=>{
+				const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+				if(accounts.length > 0){
+					console.log(parseInt(ethereum.chainId))
+					if(parseInt(ethereum.chainId) == 97){
+						connection = true
+						ethereumButton.innerText = 'Connected'
+						divAccount.innerHTML = '<p> Address: '+ accounts[0] + '  </p>'	
+						document.querySelector(".personal").style.visibility = "visible"
+
+						stakeContract.methods.showRewards(accounts[0]).call().then((myClaimable)=>{
+							document.querySelector(".myClaim").innerText = myClaimable
+
+						});
+						
+						var totalStk = stakeContract.methods.stakers(accounts[0]).call().then((totalStk)=>{
+							document.querySelector(".myStaked").innerText = totalStk.stakedAmount
+							console.log(totalStk)
+						})
+						
+
+					}else{
+						alert('Please Switch Network to BSC Testnet')
+					}
+					
+				}
+			})
+
+			ethereum.on('accountsChanged', async function (accounts) {
+			  if(connection){
+			  	//const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+			  	divAccount.innerHTML = '<p> Address: '+ accounts[0] + '  </p>'
+			  	
+			  }
+			});
+
+			sendBtn.addEventListener('click',async () => {
+				if(connection){
+					console.log('sending......')
+					var rec = document.querySelector('[name="recepient"]').value
+					var val = document.querySelector('[name="value"]').value
+					const transactionParameters = {
+					  to: rec, 
+					  from: ethereum.selectedAddress,
+					  value: val,
+					  chainId: '97'
+					};
+					// const txHash = await ethereum.request({
+					//   method: 'eth_sendTransaction',
+					//   params: [transactionParameters],
+					// });
+					const txHash = await erc20.method.transfer(rec,10000000000)
+					console.log(txHash)
+					console.log(transactionParameters)
+					console.log(rec)
+					console.log(val)
+				}else{
+
+					alert('Please Connect First')
+				}
+			})
+
+			var cltreward = document.querySelector(".cltreward")
+			cltreward.addEventListener('click',async ()=>{
+				var amount = document.querySelector('[name="perDay"]').value
+				var reward = await stakeContract.methods.calculatePerDayRewards(amount).call()
+
+				document.querySelector(".rewardResult").innerText = "You per day reward will be:  " + reward
+
+			})
+
+			var stakenow = document.querySelector(".stknow");
+			stakenow.addEventListener("click", async ()=>{
+				var amount = document.querySelector('[name="stakeAmount"]').value;
+				var allowed = await erc20.methods.allowance(ethereum.selectedAddress, addressStaking).call();
+				var bal = await erc20.methods.balanceOf(ethereum.selectedAddress).call()
+				if(amount > bal){
+					alert("Insufficient balance")
+				}
+				if(amount > allowed){
+					alert("Insufficient allowance")
+					var tx = await erc20.methods.approve(addressStaking,"1000000000000000000000000000000000").send({from:ethereum.selectedAddress}).then(async()=>{
+
+							var status = await web30.eth.getTransactionReceipt(tx).status
+						if(status){
+							var txstake = stakeContract.methods.StakeAmount(amount).send({from:ethereum.selectedAddress});
+							console.log(txstake)
+							getStakingData(window.ethereum)
+						}
+					})
+				}else{
+					var txstake = await stakeContract.methods.StakeAmount(amount).send({from:ethereum.selectedAddress});
+					console.log(txstake)
+					getStakingData(window.ethereum)
+
+				}
+
+			})
+
+
+
+		}else{
+			alert("Install Metamask")
+			const web30 = new Web3("https://speedy-nodes-nyc.moralis.io/12df964d866c784c7027641d/bsc/testnet");
+			
+			getStakingData("https://speedy-nodes-nyc.moralis.io/12df964d866c784c7027641d/bsc/testnet")
+			//getContractData("https://speedy-nodes-nyc.moralis.io/12df964d866c784c7027641d/bsc/testnet");
+		}
+
+
+		document.querySelector(".signN").addEventListener("click",async () =>{
+				if(connection){
+					var msg = web30.utils.sha3(document.querySelector('[name="msg"]').value)
+					console.log(msg)
+					var signatureData =  web30.eth.sign(msg, ethereum.selectedAddress).then((signData)=>{
+						document.querySelector(".signature").innerHTML = '<p> HASH: '+ signData + '</p>'
+					})
+
+					
+				}else{
+					alert("PLEASE CONNET FIRST")
+				}
+		})
+
+
+
+
+
+
+
+	</script>
+	
+</body>
+</html>
